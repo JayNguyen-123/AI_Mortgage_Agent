@@ -1,0 +1,397 @@
+/* ==========================================================================
+   Loan Desk -- design tokens
+   Direction: a mortgage processing "desk" -- ledgers, case files, paper.
+   Cool paper background (not the generic warm-cream default), a brass
+   accent reserved for closing-stage moments (not a stock terracotta),
+   and monospace treatment for anything that's actually financial data
+   (loan IDs, dollar amounts, dates) -- a considered choice tying back
+   to the ledger concept, not a mismatched type pairing.
+   ========================================================================== */
+:root {
+  /* Color */
+  --paper:      #EDF0EE;
+  --paper-raised: #FFFFFF;
+  --ink:        #1B2430;
+  --slate:      #5B6B76;
+  --rule:       #C7D0CB;
+  --ledger-blue: #2F5D82;
+  --ledger-blue-dim: #E3ECF1;
+  --brass:      #A97D2F;
+  --brass-dim:  #F3E9D6;
+  --rust:       #A64B33;
+  --rust-dim:   #F5E4DF;
+  --green-settled: #3D6B4F;
+  --green-settled-dim: #E1EBE3;
+
+  /* Type */
+  --font-display: "IBM Plex Serif", Georgia, serif;
+  --font-body: "IBM Plex Sans", -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", monospace;
+
+  /* Layout */
+  --radius: 3px;
+  --shadow-card: 0 1px 2px rgba(27,36,48,0.08), 0 1px 1px rgba(27,36,48,0.04);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+a { color: var(--ledger-blue); }
+
+/* -------------------------------------------------------------------- */
+/* Top bar                                                               */
+/* -------------------------------------------------------------------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: var(--paper-raised);
+  border-bottom: 1px solid var(--rule);
+}
+
+.topbar .wordmark {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.topbar .wordmark span { color: var(--ledger-blue); }
+
+.topbar nav { display: flex; gap: 20px; align-items: center; }
+.topbar nav a {
+  text-decoration: none;
+  color: var(--slate);
+  font-size: 13px;
+  font-weight: 500;
+}
+.topbar nav a.active, .topbar nav a:hover { color: var(--ink); }
+
+.topbar .user {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: var(--slate);
+}
+.topbar .user .role-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--ledger-blue-dim);
+  color: var(--ledger-blue);
+  padding: 2px 6px;
+  border-radius: var(--radius);
+}
+.topbar .user form { display: inline; }
+.topbar .user button {
+  background: none; border: none; color: var(--slate);
+  font-size: 12px; cursor: pointer; text-decoration: underline;
+  padding: 0; font-family: var(--font-body);
+}
+
+/* -------------------------------------------------------------------- */
+/* Page shell                                                            */
+/* -------------------------------------------------------------------- */
+.page {
+  padding: 28px 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-header { margin-bottom: 22px; }
+.page-header h1 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+.page-header p { color: var(--slate); margin: 0; font-size: 13px; }
+
+/* -------------------------------------------------------------------- */
+/* Stage spectrum -- cool (early) to brass (closing) to settled green.
+   This is informative, not decorative: the color itself communicates
+   how far along the file is.                                           */
+/* -------------------------------------------------------------------- */
+.stage-lead                 { --stage-color: #6B7A8F; }
+.stage-application_started  { --stage-color: #4A6E93; }
+.stage-document_collection  { --stage-color: #2F5D82; }
+.stage-processing           { --stage-color: #35708A; }
+.stage-underwriting         { --stage-color: #4E7A6E; }
+.stage-conditional_approval { --stage-color: #7C8A3E; }
+.stage-clear_to_close       { --stage-color: #A97D2F; }
+.stage-closing_scheduled    { --stage-color: #B8862E; }
+.stage-funded               { --stage-color: #3D6B4F; }
+.stage-denied               { --stage-color: #A64B33; }
+.stage-withdrawn            { --stage-color: #8B8378; }
+.stage-on_hold              { --stage-color: #9C8F5F; }
+
+/* -------------------------------------------------------------------- */
+/* Kanban board                                                          */
+/* -------------------------------------------------------------------- */
+.board {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+}
+
+.board-column { flex: 0 0 260px; }
+
+.board-column-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 2px 8px 2px;
+  border-top: 3px solid var(--stage-color);
+  padding-top: 8px;
+  margin-bottom: 10px;
+}
+.board-column-header h2 {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  margin: 0;
+}
+.board-column-header .count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--slate);
+}
+
+.board-column-cards { display: flex; flex-direction: column; gap: 10px; }
+
+/* The signature element: a loan card styled like a case-file folder --
+   a colored top edge (the stage), and a stacked-paper shadow suggesting
+   there's more than one sheet underneath. */
+.loan-card {
+  position: relative;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: var(--paper-raised);
+  border-radius: var(--radius);
+  border-top: 3px solid var(--stage-color);
+  box-shadow: var(--shadow-card);
+  padding: 12px 12px 10px 12px;
+}
+.loan-card::before, .loan-card::after {
+  content: "";
+  position: absolute;
+  left: 4px; right: 4px;
+  height: 100%;
+  top: 3px;
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  z-index: -1;
+}
+.loan-card::after { left: 8px; right: 8px; top: 6px; z-index: -2; }
+
+.loan-card .borrower-name {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 2px 0;
+}
+.loan-card .loan-id {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--slate);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.loan-card .loan-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--slate);
+}
+.loan-card .amount { font-family: var(--font-mono); color: var(--ink); }
+
+.loan-card .chips { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.chip {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: var(--radius);
+  background: var(--ledger-blue-dim);
+  color: var(--ledger-blue);
+}
+.chip.rust { background: var(--rust-dim); color: var(--rust); }
+
+/* -------------------------------------------------------------------- */
+/* Loan detail                                                           */
+/* -------------------------------------------------------------------- */
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 900px) { .detail-grid { grid-template-columns: 1fr; } }
+
+.panel {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.panel h3 {
+  font-family: var(--font-body);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--slate);
+  margin: 0 0 14px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--slate);
+  font-weight: 500;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--rule);
+}
+td { padding: 8px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td.mono, .mono { font-family: var(--font-mono); }
+tr:last-child td { border-bottom: none; }
+
+.status-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: var(--radius);
+}
+.status-badge.verified, .status-badge.done, .status-badge.extracted { background: var(--green-settled-dim); color: var(--green-settled); }
+.status-badge.needs_review, .status-badge.open, .status-badge.uploaded { background: var(--brass-dim); color: var(--brass); }
+.status-badge.rejected, .status-badge.blocked { background: var(--rust-dim); color: var(--rust); }
+
+.timeline { list-style: none; margin: 0; padding: 0; }
+.timeline li {
+  padding: 8px 0 8px 16px;
+  border-left: 2px solid var(--rule);
+  margin-left: 4px;
+  position: relative;
+  font-size: 12.5px;
+}
+.timeline li::before {
+  content: "";
+  position: absolute;
+  left: -5px; top: 12px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--ledger-blue);
+}
+.timeline .ts { font-family: var(--font-mono); color: var(--slate); font-size: 11px; }
+
+.stage-form { display: flex; gap: 8px; margin-top: 14px; }
+select, input[type=text], input[type=email], input[type=password] {
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 7px 10px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+  color: var(--ink);
+}
+select:focus, input:focus, button:focus {
+  outline: 2px solid var(--ledger-blue);
+  outline-offset: 1px;
+}
+
+button.primary {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13px;
+  padding: 7px 16px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--ledger-blue);
+  color: white;
+  cursor: pointer;
+}
+button.primary:hover { background: #244A69; }
+
+.error-banner {
+  background: var(--rust-dim);
+  color: var(--rust);
+  border: 1px solid var(--rust);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--slate);
+  font-size: 13px;
+}
+
+/* -------------------------------------------------------------------- */
+/* Login                                                                 */
+/* -------------------------------------------------------------------- */
+.login-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+}
+.login-card {
+  width: 340px;
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 32px;
+  box-shadow: var(--shadow-card);
+}
+.login-card .wordmark {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.login-card .wordmark span { color: var(--ledger-blue); }
+.login-card h1 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  margin: 0 0 22px 0;
+}
+.login-card label {
+  display: block;
+  font-size: 12px;
+  color: var(--slate);
+  margin-bottom: 4px;
+  margin-top: 14px;
+}
+.login-card input { width: 100%; }
+.login-card button.primary { width: 100%; margin-top: 20px; padding: 10px; }
+
+/* -------------------------------------------------------------------- */
+/* Reduced motion / responsive floor                                     */
+/* -------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
