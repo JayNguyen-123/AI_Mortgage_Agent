@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    env_file: .env
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/app
+
+  worker:
+    build: .
+    command: celery -A app.pipeline.scheduler worker --loglevel=info
+    env_file: .env
+    depends_on:
+      - db
+      - redis
+
+  beat:
+    build: .
+    command: celery -A app.pipeline.scheduler beat --loglevel=info
+    env_file: .env
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: mortgage_user
+      POSTGRES_PASSWORD: mortgage_pass
+      POSTGRES_DB: mortgage_agent
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:

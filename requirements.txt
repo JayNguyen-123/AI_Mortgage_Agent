@@ -1,0 +1,66 @@
+# --- Web / API ---
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+websockets==12.0
+pydantic==2.9.2
+pydantic-settings==2.5.2
+python-multipart==0.0.12
+jinja2==3.1.4
+pyjwt==2.9.0
+email-validator==2.2.0
+
+# --- DB ---
+sqlalchemy==2.0.35
+alembic==1.13.2
+psycopg2-binary==2.9.9
+
+# --- Agent orchestration ---
+langgraph==0.2.34
+langchain-core==0.3.9
+
+# --- Google Gemini Live (speech-to-speech) ---
+google-genai==0.5.0
+
+# --- Voice transport (telephony) ---
+# Heavy dependency set (torch for Silero VAD, etc) -- install this
+# extra only where you're actually running the voice pipeline (e.g. the
+# `worker` service that handles Twilio calls), not necessarily on every
+# API instance.
+pipecat-ai[google,twilio,silero]==0.0.90
+
+# --- Document analysis / OCR ---
+pytesseract==0.3.13
+pdf2image==1.17.0
+pdfplumber==0.11.4
+Pillow==10.4.0
+opencv-python-headless==4.10.0.84
+numpy==2.1.1
+# System dependency (not pip-installable): tesseract-ocr + poppler-utils
+# are installed via apt in the Dockerfile. For local (non-docker) dev:
+#   macOS:  brew install tesseract poppler
+#   Ubuntu: apt-get install tesseract-ocr poppler-utils
+
+# --- Fixture generation for document-parsing tests (dev only) ---
+reportlab==4.2.5
+
+# --- Knowledge base / RAG ---
+chromadb==0.5.5
+sentence-transformers==3.1.1
+
+# --- Background jobs / follow-ups ---
+celery==5.4.0
+redis==5.0.8
+
+# --- Notifications ---
+twilio==9.3.2
+sendgrid==6.11.0
+
+# --- Utilities ---
+python-dotenv==1.0.1
+tenacity==8.5.0
+structlog==24.4.0
+PyYAML==6.0.2
+
+# --- Testing ---
+pytest==8.3.3
+pytest-asyncio==0.24.0
