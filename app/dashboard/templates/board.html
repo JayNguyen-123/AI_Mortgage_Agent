@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Pipeline -- Loan Desk{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="page-header">
+    <h1>Pipeline</h1>
+    <p>{{ total_loans }} active loan{{ 's' if total_loans != 1 }} across {{ columns|length }} stages.</p>
+  </div>
+
+  {% if total_loans == 0 %}
+    <div class="empty-state">No active loans yet. New loans appear here as soon as they're started.</div>
+  {% else %}
+  <div class="board">
+    {% for column in columns %}
+    <div class="board-column">
+      <div class="board-column-header stage-{{ column.stage_key }}">
+        <h2>{{ column.stage_label }}</h2>
+        <span class="count">{{ column.loans|length }}</span>
+      </div>
+      <div class="board-column-cards">
+        {% for loan in column.loans %}
+        <a class="loan-card stage-{{ column.stage_key }}" href="/dashboard/loans/{{ loan.id }}">
+          <div class="borrower-name">{{ loan.borrower_name }}</div>
+          <div class="loan-id">{{ loan.id[:8] }} &middot; {{ loan.loan_type }}</div>
+          <div class="loan-meta">
+            <span>{{ loan.days_in_stage }}d in stage</span>
+            <span class="amount">{{ loan.loan_amount_display }}</span>
+          </div>
+          <div class="chips">
+            {% if loan.open_task_count > 0 %}
+            <span class="chip {{ 'rust' if loan.has_stale_task else '' }}">{{ loan.open_task_count }} open task{{ 's' if loan.open_task_count != 1 }}</span>
+            {% endif %}
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

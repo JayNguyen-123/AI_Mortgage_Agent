@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Tasks -- Loan Desk{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="page-header">
+    <h1>Stale tasks</h1>
+    <p>Open tasks past their due date, across every active loan.</p>
+  </div>
+
+  {% if tasks %}
+  <div class="panel">
+    <table>
+      <thead><tr><th>Borrower</th><th>Task</th><th>Due</th><th></th></tr></thead>
+      <tbody>
+        {% for task in tasks %}
+        <tr>
+          <td>{{ task.borrower_name }}</td>
+          <td>{{ task.description }}</td>
+          <td class="mono status-badge blocked">{{ task.due_display }}</td>
+          <td><a href="/dashboard/loans/{{ task.loan_id }}">View loan</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">Nothing stale right now -- every open task is within its due date.</div>
+  {% endif %}
+</div>
+{% endblock %}

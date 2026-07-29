@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Loan Desk{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/dashboard/static/style.css">
+</head>
+<body>
+  {% if user %}
+  <div class="topbar">
+    <div class="wordmark">LOAN<span>DESK</span></div>
+    <nav>
+      <a href="/dashboard" class="{{ 'active' if active_nav == 'board' }}">Pipeline</a>
+      <a href="/dashboard/tasks" class="{{ 'active' if active_nav == 'tasks' }}">Tasks</a>
+    </nav>
+    <div class="user">
+      <span>{{ user.full_name }}</span>
+      <span class="role-badge">{{ user.role.value }}</span>
+      <form method="post" action="/auth/logout"><button type="submit">Log out</button></form>
+    </div>
+  </div>
+  {% endif %}
+
+  {% block content %}{% endblock %}
+</body>
+</html>

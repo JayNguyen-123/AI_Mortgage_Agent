@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}{{ loan.borrower_name }} -- Loan Desk{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="page-header">
+    <h1>{{ loan.borrower_name }}</h1>
+    <p class="mono">{{ loan.id }} &middot; {{ loan.loan_type }} &middot; {{ loan.loan_purpose }}</p>
+  </div>
+
+  {% if error %}<div class="error-banner">{{ error }}</div>{% endif %}
+
+  <div class="detail-grid">
+    <div>
+      <div class="panel">
+        <h3>Documents</h3>
+        {% if documents %}
+        <table>
+          <thead><tr><th>Type</th><th>Status</th><th>Uploaded</th></tr></thead>
+          <tbody>
+            {% for doc in documents %}
+            <tr>
+              <td>{{ doc.doc_type }}</td>
+              <td><span class="status-badge {{ doc.status }}">{{ doc.status }}</span></td>
+              <td class="mono">{{ doc.uploaded_at }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">No documents uploaded yet.</div>
+        {% endif %}
+      </div>
+
+      <div class="panel">
+        <h3>Qualifying income</h3>
+        {% if income_items %}
+        <table>
+          <thead><tr><th>Type</th><th>Monthly</th><th>Method</th><th></th></tr></thead>
+          <tbody>
+            {% for item in income_items %}
+            <tr>
+              <td>{{ item.income_type }}</td>
+              <td class="mono">{{ item.monthly_display }}</td>
+              <td>{{ item.calculation_method }}</td>
+              <td>{% if item.flagged_for_underwriter %}<span class="status-badge needs_review">review</span>{% endif %}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">No qualifying income calculated yet.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div>
+      <div class="panel">
+        <h3>Move stage</h3>
+        <p style="color: var(--slate); font-size: 12.5px; margin: 0;">
+          Current: <strong>{{ loan.stage_label }}</strong>
+        </p>
+        {% if allowed_next_stages %}
+        <form class="stage-form" method="post" action="/dashboard/loans/{{ loan.id }}/transition">
+          <select name="new_stage">
+            {% for stage in allowed_next_stages %}
+            <option value="{{ stage.key }}">{{ stage.label }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="primary">Move</button>
+        </form>
+        {% else %}
+        <p style="color: var(--slate); font-size: 12.5px;">This is a terminal stage -- no further moves.</p>
+        {% endif %}
+      </div>
+
+      <div class="panel">
+        <h3>Open tasks</h3>
+        {% if tasks %}
+        <table>
+          <thead><tr><th>Task</th><th>Due</th></tr></thead>
+          <tbody>
+            {% for task in tasks %}
+            <tr>
+              <td>{{ task.description }}</td>
+              <td class="mono {{ 'status-badge blocked' if task.is_overdue else '' }}">{{ task.due_display }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">No open tasks.</div>
+        {% endif %}
+      </div>
+
+      <div class="panel">
+        <h3>Stage history</h3>
+        {% if stage_history %}
+        <ul class="timeline">
+          {% for entry in stage_history %}
+          <li>
+            <div class="ts">{{ entry.changed_at_display }}</div>
+            {{ entry.from_stage_label }} &rarr; <strong>{{ entry.to_stage_label }}</strong>
+            <div style="color: var(--slate);">by {{ entry.changed_by }}{% if entry.reason %} -- {{ entry.reason }}{% endif %}</div>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <div class="empty-state">No stage changes yet.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
